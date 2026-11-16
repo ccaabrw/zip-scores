@@ -32,5 +32,33 @@ date,game,participant,score
 
 Imports merge with existing results and replace matching entries. Invalid
 imports are rejected without changing saved scores. Export uses the same
-format. The app does not fetch scores from LinkedIn; enter or import results
-that participants have shared with you.
+format.
+
+## Retrieve current LinkedIn scores
+
+The optional local helper requires Node.js 18 or later. It uses LinkedIn's
+unofficial internal API, which can change or stop working and may be subject
+to LinkedIn's terms. It retrieves the current games and visible connections
+leaderboards, not historical results. People who have not played or have
+opted out may not have a score. Pinpoint uses the number of guesses; other
+games use elapsed time. Names identify participants in this app, so different
+people with the same name cannot be imported for the same game and date.
+
+1. Sign in to LinkedIn in your browser. Open browser developer tools and find
+   the `li_at` and `JSESSIONID` cookies under the cookies for
+   `https://www.linkedin.com` (usually under Application or Storage).
+2. From this project's directory, run `node linkedin-import.js`. This starts
+   the local helper; it asks for the date of the current LinkedIn puzzles and
+   then both cookie values without echoing them. Confirm the date shown by
+   LinkedIn before entering it: the response does not supply a reliable date.
+   The helper does not store the cookies, and sends them only to LinkedIn.
+   Treat them like passwords: do not share them or paste them into chat.
+3. Use **Import CSV** in the app to select `linkedin-scores.csv`. The file
+   contains names and scores, is created with owner-only permissions where
+   supported, and is ignored by Git. It will not overwrite an existing file:
+   remove or rename the old file before running the helper again.
+
+If authentication expires, sign in again and use fresh cookies. API changes,
+incomplete responses, duplicate names, or an existing output file cause the
+helper to fail without producing a new CSV. Manual entry and CSV import remain
+available without the helper.
